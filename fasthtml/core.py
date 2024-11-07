@@ -655,11 +655,11 @@ for o in ('get', 'post', 'delete', 'put', 'patch', 'options'): setattr(Client, o
 # %% ../nbs/api/00_core.ipynb
 class APIRouter:
     "Add routes to an app"
-    def __init__(self): self.routes,self.wss = [],[]
+    def __init__(self, prefix=''): self.routes,self.wss,self.prefix = [],[],prefix
 
     def __call__(self:FastHTML, path:str=None, methods=None, name=None, include_in_schema=True, body_wrap=noop_body):
         "Add a route at `path`"
-        def f(func): return self.routes.append((func, path,methods,name,include_in_schema,body_wrap))
+        def f(func): return self.routes.append((func, self.prefix + (path or ''),methods,name,include_in_schema,body_wrap))
         return f(path) if callable(path) else f
 
     def to_app(self, app):
